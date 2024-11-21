@@ -3,20 +3,38 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - main   # Trigger workflow when changes are pushed to the main branch
+      - main  # Trigger when changes are pushed to the main branch
   schedule:
-    - cron: '0 0 * * 1'  # Optional: Weekly rebuild to capture base image updates (every Monday at midnight)
+    - cron: '0 0 */3 * *'  # Trigger every 3 days at midnight UTC
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Checkout the repository code
-    - name: Checkout code
+    # Step 1: Checkout your repository
+    - name: Checkout your repository
       uses: actions/checkout@v3
 
-    # Step 2: Log in to GitHub Container Registry
+    # Step 2: Sync with the original repository
+    - name: Sync with the original repository
+      run: |
+        # Set up the original repo URL (replace with the correct URL)
+        ORIGINAL_REPO=https://github.com/coleam00/bolt.new-any-llm.git
+
+        # Add the original repository as a remote
+        git remote add upstream $ORIGINAL_REPO
+
+        # Fetch the changes from the original repository
+        git fetch upstream
+
+        # Merge the original repository's changes into your current branch
+        git merge upstream/main --allow-unrelated-histories -m "Sync with original repository"
+
+        # Push the merged changes back to your repository
+        git push origin main
+
+    # Step 3: Log in to GitHub Container Registry
     - name: Log in to GitHub Container Registry
       uses: docker/login-action@v2
       with:
@@ -24,10 +42,10 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    # Step 3: Build and push the Docker image
+    # Step 4: Build and push the Docker image
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v4
       with:
-        context: .  # The root directory of your repository as the Docker build context
+        context: .
         push: true  # Push the image to the registry
         tags: ghcr.io/${{ github.repository }}:latest
