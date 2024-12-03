@@ -8,8 +8,11 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig((config) => {
   return {
     server: {
-      port: 7014,
+      port: 7015,
     },
+    preview: {
+    port: 7016, // Ensure preview matches development server (if needed)
+  },
     build: {
       target: 'esnext',
     },
