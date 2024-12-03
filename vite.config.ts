@@ -10,7 +10,6 @@ export default defineConfig((config) => {
     server: {
       port: 7015,
     },
-  },
     build: {
       target: 'esnext',
     },
