@@ -40,7 +40,7 @@ services:
       - VITE_HMR_PORT=7015  # Vite frontend live reload
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true  
-      - PORT=7014  # Backend development
+      - PORT=7015  # Backend development
       - GROQ_API_KEY=${GROQ_API_KEY}
       - HuggingFace_API_KEY=${HuggingFace_API_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
@@ -60,7 +60,6 @@ services:
         consistency: cached
       - /app/node_modules
     ports:
-      - "7014:7014"  # Backend for development
       - "7015:7015"  # Vite frontend preview
     command: pnpm run dev --host 0.0.0.0
     profiles: ["development", "default"]  # Make development the default profile
